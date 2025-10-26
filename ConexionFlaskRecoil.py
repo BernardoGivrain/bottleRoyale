@@ -238,15 +238,16 @@ def BottleRegister(idBM, Country, size, licor, brand, fillLevel):
         WHERE idAirline = %s
     """, (idAirline))
     Airline_rule = cursor.fetchone()
-    if Country_rule[0]== False :
-        decision = "Discart"
-    elif Airline_rule[0] == False :
-        decision = "Discart"
-    else:
-        if Airline_rule[1] > fillLevel :
+    if licor == "Wine" || licor == "Champagne"
+        if Country_rule[0]== False :
+            decision = "Discart"
+        elif Airline_rule[0] == False :
             decision = "Discart"
         else:
-            decision = "Keep"
+            if Airline_rule[1] > fillLevel :
+                decision = "Discart"
+            else:
+                decision = "Keep"
     cursor.execute("""
         INSERT INTO botellas (idBM, size, licor, brand, decision)
         VALUES (%s, %s, %s, %s, %s)
@@ -259,3 +260,4 @@ def BottleRegister(idBM, Country, size, licor, brand, fillLevel):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
