@@ -176,11 +176,6 @@ def BottleRegister(idBM, Country, size, licor, brand, fillLevel):
     conexion.close()
     return decision
 
-def Logout() :
-    return jsonify({
-        "status": "ok",
-        "next_route": "/Login"
-    })
-
 if __name__ == "__main__":
+
     app.run(debug=True)
