@@ -80,6 +80,98 @@ On the following Entity-Relationship Model (ER) a color distinction is establish
    </p>
  </br>
 
+<hr>
+
+###   Data Dictionaries
+
+On the following section the Data Dictionary of each established entity and table in the relational database known as **bottleroyale** is shown for a further comprehension of each field and the relationship among them: 
+
+<br>
+
+**airline Entity**
+
+| Name | Description | Type | Example |
+| ---- | ------- | ------ | ----- |
+| idAirline | ID of the airline. | int | 01 |
+| name  | Name of the airline.  | varchar (30) | "Aeromexico" |
+| rule | Rule that dictates how will be alcohol bottle handled based on the preestablished regulations with GateGroup and the provided range (if provided). | varchar (10) | "Discard" |
+| range  | Range over which the rule will be enforced based on the Fill Level of the bottle handled. | float | 0.80 |
+
+<br>
+
+**bottle Entity**
+
+| Name | Description | Type | Example |
+| ---- | ------- | ------ | ----- |
+| idBottle | ID of the Bottle per each Bottle Management process. | int | 01 |
+| idBM | ID that relates the Bottle to its Bottle Management process. | int | 01 |
+| licor | Type of licor being handled | varchar (20) | "Whiskey" |
+| size | Maximum capacity of the bottle in ml (mililiters) | int | 1000 |
+| brand | Brand of the licor being handled. | varchar (30) | "Johny Walker" |
+| decision | Decision taken by the algorithm that can be either discard the bottle or pass it to the next flight of the airline, based on airline and country regulations. | tinyint | true | 
+| fillLevel | Fill level of the alcohol bottle approximated by the learning and recognition of images established within [0.0, 1.0] | float | 0.80 |
+
+<br>
+
+**bottlemanagement Entity**
+
+| Name | Description | Type | Example |
+| ---- | ------- | ------ | ----- |
+| idBM | ID of the Bottle Management process started by a specific flight by a specific employee. | int | 01 | 
+| idEmployee | ID of the Employee who is responsible for the Bottle Management process. | int | 01 |
+| dateAssigned | Date and time whenever the Bottle Management was started. | timestamp | "YYYY-MM-DD hh:mm:ss" |
+| idFlight | ID of the Flight whose trolleys are being reviewed by the Employee on the Bottle Management process. | int | 01 |
+
+<br>
+
+**country Entity**
+
+| Name | Description | Type | Example |
+| ---- | ------- | ------ | ----- |
+| idCountry | ID of a country references to a specific flight (in this case only the Arrival is taken). | int | 01 |
+| name | Name of the country. | varchar (50) | "Mexico" |
+| rule | Rule that dictates how will be alcohol bottle handled based on the country alcohol policies and regulations. | varchar (10) | "Discard" |
+
+
+<br>
+
+**employee Entity**
+
+| Name | Description | Type | Example |
+| ---- | ------- | ------ | ----- |
+| idEmployee | ID of a determined employee under the GateGroup corporation system. | int | 01 |
+| username | Username of the employee. | varchar (50) | "JuanMartinez2" |
+| password | Password of the employee to access the GateGroup system. | varchar (20) | "gateMart0102" |
+| idFacility | ID of the facility where the employee works. | int | 01 |
+
+
+<br>
+
+**facility Entity**
+
+| Name | Description | Type | Example |
+| ---- | ------- | ------ | ----- |
+
+
+<br>
+
+**flight Entity**
+
+| Name | Description | Type | Example |
+| ---- | ------- | ------ | ----- |
+
+
+<br>
+
+**works Entity**
+
+| Name | Description | Type | Example |
+| ---- | ------- | ------ | ----- |
+
+
+<hr>
+
+
 For testing purposes all the previous shown tables of the database have been provisionally created on MySQL and filled each with syntetic information to test the algorithm logic to take decisions based on specific airline (range) and country rugulations.
 
 The SQL file that contains such testing information has been uploaded to the current repository under the title of **bottleroyale.sql**
