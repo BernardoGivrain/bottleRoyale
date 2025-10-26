@@ -26,9 +26,9 @@ Due to this confusion, the employees responsible for handling the alcohol bottle
 
 <br>
 
-### Presented Challenge
+### Challenge
 
-Design a software approach that can help automate these decisions so employees certainly know the right action to take based on the client guidelines. Securing efficiency and compliance with chosen rules. 
+Design a software approach that can help automate these decisions so employees certainly know the right action to take based on the client guidelines. Securing efficiency and compliance with chosen rules in benefit of GateGroup and its clients. 
 
 <br>
 
@@ -60,11 +60,27 @@ The user is able to Log Out at the main page as well.
 
 <p align="center">
   
-<img width="400" height="4000" alt="Flowchart - BottleRoyale" src="https://github.com/user-attachments/assets/6737a55f-c28d-4bff-bb6c-6112195b208b" />
+<img width="479" height="3109" alt="Flowchart - BottleRoyale" src="https://github.com/user-attachments/assets/519b6d11-2578-4e54-9464-59edf41f5cfa" />
 
 </p>
 
 
 ### Database Distribution
 
+The data used for the proposed application is a combination of the existing databases of GateGroup and the creation or addition of concrete Entities or Fields to the overall database environment.
 
+On the following Entity-Relationship Model (ER) a color distinction is established to divide:
+
+- Red: Existing databases property of GateGroup or provided through third-party software hired by the before mentioned. The mentioned fields might already be contained or its addition might be required.
+- Green: Specific new entity required by the application.
+
+<br>
+   <p align="center">
+     <img width="600" height="600" alt="MER - AlcoholBottles" src="https://github.com/user-attachments/assets/a025434c-56e7-40de-8fed-7245908850d8" />
+   </p>
+ </br>
+
+For testing purposes all the previous shown tables of the database have been provisionally created on MySQL and filled each with syntetic information to test the algorithm logic to take decisions based on specific airline (range) and country rugulations.
+
+The SQL file that contains such testing information has been uploaded to the current repository under the title of **bottleroyale.sql**
+ 
