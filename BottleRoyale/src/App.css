@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import "tailwindcss";
+@plugin "daisyui";
+
+:root{
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0rem;
+  text-align: center;
+}
+
+body{
+  background-color: hsla(252, 62%, 2.5%);
+}
+
+p{
+  font-family: 'Nunito Sans';
+}
+
+h1{
+  font-family: 'Raleway';
+  font-weight: 400;
+}
+
+.card-outer{
+  position: relative;
+}
+.card-inner{
+  border-radius: 12px;
+  background: rgba(255,255,255,0.75); 
+  padding: 1rem;
+  box-shadow: 0 20px 60px rgba(99,102,241,0.06), 0 6px 20px rgba(2,6,23,0.08);
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 1rem; 
+  line-height: 1.5;
+}
+
+.btn-selected{
+  background-color: #d1d5db; 
+  color: #0f172a; 
+  border: 2px solid rgba(100,116,139,0.45); 
+}
+
+.btn, .card-inner{
+  border: 1.5px solid rgba(100,116,139,0.28); 
+}
+
+.btn{
+  padding: .6rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+.btn-sm{
+  padding: .45rem .75rem;
+  font-size: 0.95rem;
+}
+
+.card-inner h3{
+  font-size: 1.125rem; 
+}
+.card-inner p{
+  font-size: 0.95rem; 
+  color: rgba(15,23,42,0.85);
+}
+
+/* remove visible border and hover change for specific navbar buttons */
+.no-border-hover{
+  border: none !important;
+  box-shadow: none !important;
+}
+.no-border-hover:hover, .no-border-hover:focus{
+  background: transparent !important;
+  color: inherit !important;
+}
+
+/* ensure no focus outline or shadow */
+.no-border-hover:focus{
+  outline: none !important;
+  box-shadow: none !important;
+}
