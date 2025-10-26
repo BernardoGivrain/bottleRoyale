@@ -26,6 +26,8 @@ Due to this confusion, the employees responsible for handling the alcohol bottle
 
 <br>
 
+<hr>
+
 ### Challenge
 
 Design a software approach that can help automate these decisions so employees certainly know the right action to take based on the client guidelines. Securing efficiency and compliance with chosen rules in benefit of GateGroup and its clients. 
@@ -34,18 +36,55 @@ Design a software approach that can help automate these decisions so employees c
 
 ## Development
 
+### Assumptions
+
+Based on the information collected from the multiple interactions, questions and talks with the representatives of GateGroup at the HackMTY2025 the following assumptions have been taken:
+
+- GateGroup company has a database of Employees and keep record of their information and the facility they work at. *
+- GateGroup is responsible for setting an account for the employee to use at the presented application, reason why a Sign In is not implemented in the Log In page.
+- GateGroup company has a database or has access to a database that keeps an updated record of the multiple flights of que associated airlines. *
+- The greatest problem to tackle is the reduction of the human inconsistencies among the desicion taking processes.
+- There are only two processes available to perform with an opened alcohol bottle for GateGroup: discard or keep, based on determined ranges.
+- Beer, wine and small alcohol bottles are always **discarted**.
+- At no moment any kind of licor of any brand is combined in order to save space into the same bottle. Instead, each kind of licor is maintained within each its original container only adding several bottles in order to meet client licor requirements, each on its individual container.
+
+
+<br>
+
+\* = Provitional Database has been created for testing purposes.
+
+
+<br>
+
+<hr>
+
 ### Solution Approach 
 
 Through a progressive web application we present a product for the employees handling the alcohol bottles after events.
 
 Based on the client, by registering each alcohol bottle to manage through:
 
-- Interactive Forms.
-- Pythorch Machine Learning to make an object categorization.
+<br>
+
+#### Interactive Forms
+
+Strategic recolection of data that filters thanks to the selection of:
+Airline -> Flight -> 
+
+
+<br>
+
+#### Pythorch Machine Learning to make an object categorization.
+
+
+
+<br>
 
 The system determinates and shows the proper action to be taken on screen based on client policies, and registers each handling performed by the employee based on the bottles of a specific event.
 
 <br>
+
+<hr>
 
 ### Application Work Flow
 
@@ -60,10 +99,13 @@ The user is able to Log Out at the main page as well.
 
 <p align="center">
   
-<img width="479" height="3109" alt="Flowchart - BottleRoyale" src="https://github.com/user-attachments/assets/519b6d11-2578-4e54-9464-59edf41f5cfa" />
+<img width="350" height="4500" alt="Flowchart - BottleRoyale" src="https://github.com/user-attachments/assets/519b6d11-2578-4e54-9464-59edf41f5cfa" />
 
 </p>
 
+<br>
+
+<hr>
 
 ### Database Distribution
 
@@ -80,15 +122,23 @@ On the following Entity-Relationship Model (ER) a color distinction is establish
    </p>
  </br>
 
+For testing purposes all the previous shown tables of the database have been provisionally created on MySQL and filled each with syntetic information to test the algorithm logic to take decisions based on specific airline (range) and country rugulations.
+
+The SQL file that contains such testing information has been uploaded to the current repository under the title of **bottleroyale.sql**
+ 
+<br>
+
 <hr>
 
 ###   Data Dictionaries
 
 On the following section the Data Dictionary of each established entity and table in the relational database known as **bottleroyale** is shown for a further comprehension of each field and the relationship among them: 
 
+
 <br>
 
-**airline Entity**
+
+Entity **airline**
 
 | Name | Description | Type | Example |
 | ---- | ------- | ------ | ----- |
@@ -99,7 +149,8 @@ On the following section the Data Dictionary of each established entity and tabl
 
 <br>
 
-**bottle Entity**
+
+Entity **bottle**
 
 | Name | Description | Type | Example |
 | ---- | ------- | ------ | ----- |
@@ -113,7 +164,8 @@ On the following section the Data Dictionary of each established entity and tabl
 
 <br>
 
-**bottlemanagement Entity**
+
+Entity **bottlemanagement**
 
 | Name | Description | Type | Example |
 | ---- | ------- | ------ | ----- |
@@ -124,7 +176,8 @@ On the following section the Data Dictionary of each established entity and tabl
 
 <br>
 
-**country Entity**
+
+Entity **country**
 
 | Name | Description | Type | Example |
 | ---- | ------- | ------ | ----- |
@@ -135,7 +188,8 @@ On the following section the Data Dictionary of each established entity and tabl
 
 <br>
 
-**employee Entity**
+
+Entity **employee**
 
 | Name | Description | Type | Example |
 | ---- | ------- | ------ | ----- |
@@ -147,32 +201,38 @@ On the following section the Data Dictionary of each established entity and tabl
 
 <br>
 
-**facility Entity**
+
+Entity **facility**
 
 | Name | Description | Type | Example |
 | ---- | ------- | ------ | ----- |
+| idFacility | ID that identifies a specific facility where N employees work under the GateGroup management. | int | 01 |
+
+<br>
+
+
+Entity **flight**
+
+| Name | Description | Type | Example |
+| ---- | ------- | ------ | ----- |
+| idFlight | ID of the Flight which is a combination of the Airline code and the route specification | varchar (8) | "BA2490" |
+| idAirline | ID of the airline. | int | 01 |
+| idArrival | ID of a country that reference to the Arrival of the determined flight. | int | 01 |
 
 
 <br>
 
-**flight Entity**
+Relation **works**
 
 | Name | Description | Type | Example |
 | ---- | ------- | ------ | ----- |
-
-
-<br>
-
-**works Entity**
-
-| Name | Description | Type | Example |
-| ---- | ------- | ------ | ----- |
-
+| idWorks | ID that shows the relation between the Airlines that function at a specific facility | int | 01 |
+| idFacility | ID that identifies a specific facility where N employees work under the GateGroup management. | int | 01 |
+| idAirline | ID of the airline. | int | 01 |
 
 <hr>
 
 
-For testing purposes all the previous shown tables of the database have been provisionally created on MySQL and filled each with syntetic information to test the algorithm logic to take decisions based on specific airline (range) and country rugulations.
 
-The SQL file that contains such testing information has been uploaded to the current repository under the title of **bottleroyale.sql**
- 
+
+
