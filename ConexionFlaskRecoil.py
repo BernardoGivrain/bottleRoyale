@@ -258,23 +258,4 @@ def BottleRegister(idBM, Country, size, licor, brand, fillLevel):
     return decision
 
 if __name__ == "__main__":
-    # Run on port 5001 to match frontend expectations
-    app.run(debug=True, host='0.0.0.0', port=5001)
-
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    # Accepts JSON { image: 'data:image/png;base64,...' }
-    data = request.get_json() or {}
-    img = data.get('image')
-    if not img:
-        return jsonify({'error': 'no image provided'}), 400
-
-    # TODO: replace with real model inference. For now return deterministic fake response.
-    # Simple heuristic: if the payload length is even -> 'Keep', else 'Discard'
-    try:
-        l = len(img)
-        pred = 'Keep' if (l % 2 == 0) else 'Discard'
-        return jsonify({'prediction': pred})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    app.run(debug=True)
