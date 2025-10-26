@@ -69,7 +69,6 @@ h1{
   color: rgba(15,23,42,0.85);
 }
 
-/* remove visible border and hover change for specific navbar buttons */
 .no-border-hover{
   border: none !important;
   box-shadow: none !important;
@@ -79,7 +78,6 @@ h1{
   color: inherit !important;
 }
 
-/* ensure no focus outline or shadow */
 .no-border-hover:focus{
   outline: none !important;
   box-shadow: none !important;

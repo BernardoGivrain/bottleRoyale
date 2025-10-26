@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import AirlineSearch from "../components/airlineSearch";
+import FlightIdInput from "../components/flightIdInput";
 import "../App.css";
 
 export default function Forms(){
   const [airline, setAirline] = useState('');
+  const [flightId, setFlightId] = useState('');
 
   return (
     <div>
@@ -28,6 +30,16 @@ export default function Forms(){
                 <p className="text-sm text-neutral-800/90">Provide the name of the airline.</p>
                 <div className="mt-4 flex justify-center">
                   <AirlineSearch airline={airline} setAirline={setAirline} />
+                </div>
+              </div>
+            </div>
+
+            <div className="relative mb-6 card-outer" style={{transform: 'translateY(12px)', zIndex: 30}}>
+              <div className="card-inner p-6 mt-6">
+                <h3 className="text-lg font-semibold mb-2">Flight ID</h3>
+                <p className="text-sm text-neutral-800/90">Provide the ID of the flight.</p>
+                <div className="mt-4 flex justify-center">
+                  <FlightIdInput value={flightId} onChange={setFlightId} />
                 </div>
               </div>
             </div>

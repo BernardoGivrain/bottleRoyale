@@ -41,7 +41,7 @@ export default function Home(){
           </ul>
         </div>
         <div className="navbar-end">
-          <Link to="/forms" className="btn">Start now</Link>
+          <Link to="/login" className="btn">Start now</Link>
         </div>
       </div>
       <SpotlightNewDemo />
