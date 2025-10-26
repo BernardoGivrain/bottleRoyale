@@ -1,5 +1,7 @@
 # Bottle Royale
 
+
+
 The current project is developed to tackle the problem presented by GateGroup global food and hospitality company about "Alcohol Bottle Handling" during the HackMTY 2025.
 <br>
 
@@ -142,6 +144,8 @@ On the following section the Data Dictionary of each established entity and tabl
 
 <br>
 
+ <p align="center">
+
 
 Entity **airline**
 
@@ -153,7 +157,6 @@ Entity **airline**
 | range  | Range over which the rule will be enforced based on the Fill Level of the bottle handled. | float | 0.80 |
 
 <br>
-
 
 Entity **bottle**
 
@@ -234,6 +237,10 @@ Relation **works**
 | idWorks | ID that shows the relation between the Airlines that function at a specific facility | int | 01 |
 | idFacility | ID that identifies a specific facility where N employees work under the GateGroup management. | int | 01 |
 | idAirline | ID of the airline. | int | 01 |
+
+
+</p>
+
 
 <hr>
 
