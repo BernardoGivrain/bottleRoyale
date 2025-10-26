@@ -66,17 +66,22 @@ Based on the client, by registering each alcohol bottle to manage through:
 
 <br>
 
-#### Interactive Forms
-
-Strategic recolection of data that filters thanks to the selection of:
-Airline -> Flight -> 
-
+  #### Interactive Forms
+  
+  Strategic recolection of data that is filtered thanks to the selection of Airline and Flight Entities, to obtain specific rules that determine the final decision of a determined alcohol bottle.
+  
+  Additional registration of the bottle size, licor type, brand, and upload of photography (analyzed through an object classification to determine fill level) leads to the decision making process which has been defined taking into priority regulations in the following level:
+  
+  1. National Regulations
+  2. Airline Regulations
+  
+  Or any of which is the strictest regulation.
 
 <br>
 
-#### Pythorch Machine Learning to make an object categorization.
+#### PyTorch Machine Learning to make an object categorization.
 
-
+Model of Machine Learning developed in PyTorch trained with an approximate total of 100 images classified in four clusters that divide alcohol bottles into four main categories of fill level (0%-25%, 25%-50%, 50%-75% and 75%-100%) in order to determine a fill level for an image taken by the user eliminating the human approximation from the interaction.
 
 <br>
 
