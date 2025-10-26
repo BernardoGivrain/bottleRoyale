@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import BrandSearch from "../components/brandSearch";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
 
 import {Button} from "@heroui/react";
@@ -60,6 +60,8 @@ export default function Forms2(){
   const [prediction, setPrediction] = useState(null);
   const [predicting, setPredicting] = useState(false);
   const [showResultCard, setShowResultCard] = useState(false);
+  const [postRegisterOptions, setPostRegisterOptions] = useState(false);
+  const navigate = useNavigate();
 
   function selectDrink(type){
     setDrinkType(type === drinkType ? null : type);
@@ -103,7 +105,6 @@ export default function Forms2(){
     if(videoRef.current){
       try{ videoRef.current.pause(); videoRef.current.srcObject = null; }catch(e){}
     }
-    // clear captured preview, keep prediction and show result card if we have one
     setCaptured(null);
     setPredicting(false);
     if(prediction){
@@ -123,7 +124,6 @@ export default function Forms2(){
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     const dataUrl = canvas.toDataURL('image/png');
     setCaptured(dataUrl);
-    // send to backend for prediction
     sendPrediction(dataUrl);
   }
 
@@ -204,7 +204,7 @@ export default function Forms2(){
         <div className="max-w-4xl mx-auto px-4">
           <div className="relative">
               {[1,2,3,4].map((i)=>{
-        const offset = (i-1) * 18; // slightly reduce overlap so final card sits lower
+        const offset = (i-1) * 18; 
                 const z = 40 - i;
                 return (
                   <div
@@ -269,7 +269,7 @@ export default function Forms2(){
           </div>
         </div>
       </div>
-    {/* Camera modal */}
+    {}
     {cameraOpen && (
       <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/60">
         <div className="bg-white rounded-lg p-4 max-w-lg w-full">
@@ -312,8 +312,38 @@ export default function Forms2(){
           <h3 className="text-lg font-semibold mb-4">Result</h3>
           <p className="mb-4">Result: <strong>{prediction}</strong></p>
           <div className="flex justify-center gap-3">
-            <button className="btn btn-primary" onClick={() => setShowResultCard(false)}>Close</button>
-            <button className="btn btn-ghost" onClick={() => { setPrediction(null); setShowResultCard(false); }}>Dismiss</button>
+            <button className="btn btn-primary" onClick={() => { setShowResultCard(false); setPostRegisterOptions(true); }}>Register</button>
+            <button className="btn btn-ghost" onClick={() => { setPrediction(null); setShowResultCard(false); openCamera(); }}>Repeat photo</button>
+          </div>
+        </div>
+      </div>
+    )}
+    {postRegisterOptions && (
+      <div className="fixed inset-0 z-90 flex items-center justify-center bg-black/40">
+        <div className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full text-center">
+          <h3 className="text-lg font-semibold mb-4">Register actions</h3>
+          <p className="mb-4">Choose what to do next</p>
+          <div className="flex justify-center gap-3">
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                setPostRegisterOptions(false);
+                setPrediction(null);
+                setCaptured(null);
+                openCamera();
+              }}
+            >
+              Register another bottle
+            </button>
+            <button
+              className="btn btn-ghost"
+              onClick={() => {
+                setPostRegisterOptions(false);
+                navigate('/');
+              }}
+            >
+              End register
+            </button>
           </div>
         </div>
       </div>

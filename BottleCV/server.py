@@ -3,7 +3,6 @@ import os
 import base64
 from datetime import datetime
 
-# Import the prediction function from bottle.py
 from bottle import predecir_imagen
 
 app = Flask(__name__)
@@ -25,7 +24,6 @@ def predict():
     filename = os.path.join(UPLOAD_DIR, f"cap_{datetime.utcnow().strftime('%Y%m%d%H%M%S%f')}.png")
     with open(filename, 'wb') as f:
         f.write(img_data)
-    # Call the prediction function
     try:
         clase = predecir_imagen(filename)
     except Exception as e:
