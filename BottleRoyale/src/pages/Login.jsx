@@ -9,7 +9,24 @@ export default function Login(){
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
     setSubmitted(data);
-  navigate('/forms');
+    // call backend login to get facility and recommended airlines
+    (async ()=>{
+      try{
+        const res = await fetch('http://localhost:5001/api/login', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ idEmployee: data.email })
+        });
+        const json = await res.json();
+        if(res.ok){
+          // persist minimal info for next pages
+          localStorage.setItem('employeeData', JSON.stringify({ employee: data.email, facility: json.facility, airlines: json.airlines }));
+        }else{
+          console.warn('login error', json);
+        }
+      }catch(err){ console.warn('network', err); }
+      navigate('/forms');
+    })();
   }
 
   return (

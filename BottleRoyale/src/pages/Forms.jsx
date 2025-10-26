@@ -7,6 +7,28 @@ import "../App.css";
 export default function Forms(){
   const [airline, setAirline] = useState('');
   const [flightId, setFlightId] = useState('');
+  const [flights, setFlights] = useState([]);
+
+  // when airline changes, fetch flights from backend
+  React.useEffect(()=>{
+    if(!airline) return;
+    (async ()=>{
+      try{
+        const res = await fetch('http://localhost:5001/api/flight', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ airline })
+        });
+        const json = await res.json();
+        if(res.ok){
+          setFlights(json);
+          localStorage.setItem('flights', JSON.stringify(json));
+        }else{
+          console.warn('flight fetch', json);
+        }
+      }catch(err){ console.warn('network', err); }
+    })();
+  }, [airline]);
 
   return (
     <div>
@@ -29,7 +51,7 @@ export default function Forms(){
                 <h3 className="text-lg font-semibold mb-2">Airline</h3>
                 <p className="text-sm text-neutral-800/90">Provide the name of the airline.</p>
                 <div className="mt-4 flex justify-center">
-                  <AirlineSearch airline={airline} setAirline={setAirline} />
+                  <AirlineSearch airline={airline} setAirline={setAirline} onSelect={(a) => setAirline(a)} />
                 </div>
               </div>
             </div>
@@ -46,7 +68,25 @@ export default function Forms(){
           </div>
         </div>
       </div>
-      <Link to="/forms2"><button style={{backgroundColor:'white'}}>Hola</button></Link>
+      <Link to="/forms2"><button style={{backgroundColor:'white'}} onClick={async ()=>{
+        // when Hola button pressed on Forms, create bottle management using stored employee and selected flight
+        try{
+          const emp = JSON.parse(localStorage.getItem('employeeData') || '{}');
+          const selectedFlight = flights && flights[0] ? flights[0] : null;
+          const idFlight = selectedFlight ? selectedFlight.idFlight : (localStorage.getItem('selectedFlight') || null);
+          const idEmployee = emp && emp.employee ? emp.employee : null;
+          if(!idEmployee || !idFlight) return;
+          const res = await fetch('http://localhost:5001/api/create_bm', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ idEmployee, idFlight })
+          });
+          const json = await res.json();
+          if(res.ok){
+            localStorage.setItem('idBM', json.idBM);
+          }
+        }catch(err){ console.warn('create bm', err); }
+      }}>Hola</button></Link>
     </div>
   );
 }

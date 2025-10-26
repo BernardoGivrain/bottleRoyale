@@ -313,6 +313,7 @@ export default function Forms2(){
           <p className="mb-4">Result: <strong>{prediction}</strong></p>
           <div className="flex justify-center gap-3">
             <button className="btn btn-primary" onClick={() => { setShowResultCard(false); setPostRegisterOptions(true); }}>Register</button>
+            <button className="hidden" id="triggerRegister" />
             <button className="btn btn-ghost" onClick={() => { setPrediction(null); setShowResultCard(false); openCamera(); }}>Repeat photo</button>
           </div>
         </div>
@@ -326,11 +327,27 @@ export default function Forms2(){
           <div className="flex justify-center gap-3">
             <button
               className="btn btn-primary"
-              onClick={() => {
-                setPostRegisterOptions(false);
-                setPrediction(null);
-                setCaptured(null);
-                openCamera();
+              onClick={async () => {
+                // Call backend to register bottle using idBM
+                try{
+                  const idBM = localStorage.getItem('idBM');
+                  if(!idBM){ alert('No idBM available'); return; }
+                  const res = await fetch('http://localhost:5001/api/register_bottle', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ idBM, size: sizeMl, licor: drinkType, brand, fillLevel: 50 })
+                  });
+                  const json = await res.json();
+                  if(res.ok){
+                    alert('Bottle registered: ' + JSON.stringify(json));
+                    setPostRegisterOptions(false);
+                    setPrediction(null);
+                    setCaptured(null);
+                    openCamera();
+                  }else{
+                    alert('Error: ' + JSON.stringify(json));
+                  }
+                }catch(err){ console.warn('register bottle', err); alert('network error'); }
               }}
             >
               Register another bottle

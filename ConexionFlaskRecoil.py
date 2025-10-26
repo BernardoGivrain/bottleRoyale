@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import mysql.connector
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app)
 
 
 # CONEXIÓN A LA BASE DE DATOS
@@ -16,7 +18,7 @@ def conect():
     )
 
 
-# FUNCIÓN 1: OBTENER EMPLEADO LOGEADO
+# FUNCIÓN 1: OBTENER EMPLEADO LOGEADO: sign in depsues de ingresar informacion
 
 def EmployeeLogin(id_user):
     conexion = conect()
@@ -32,7 +34,7 @@ def EmployeeLogin(id_user):
     return Facility
 
 
-# FUNCIÓN 2: OBTENER DATOS DEL VUELO
+# FUNCIÓN 2: OBTENER DATOS DEL VUELO: boton hola
 
 def FligthRegister(no_flight):
     conexion = conect()
@@ -48,7 +50,7 @@ def FligthRegister(no_flight):
     return Country
 
 
-# FUNCIÓN 2.1: OBTENER Y DESPLEGAR LAS AEREOLINEAS RECOMENDADAS POR FACILITY
+# FUNCIÓN 2.1: OBTENER Y DESPLEGAR LAS AEREOLINEAS RECOMENDADAS POR FACILITY se activa al hacer clic a login
 
 @app.route('/api/airline', methods=['POST'])
 def getAirlines():
@@ -57,20 +59,22 @@ def getAirlines():
 
     conexion = conect()
     cursor = conexion.cursor()
-    cursor.execute(""" 
+    # get airline ids related to facility
+    cursor.execute("""
         SELECT idAirline
         FROM work
         WHERE idFacility = %s
-    """, (Facility))
+    """, (Facility,))
 
-    airline = cursor.fetchone()
+    airline_rows = cursor.fetchall()
+    airline_ids = [row[0] for row in airline_rows] if airline_rows else []
 
-    cursor.execute("""
-        SELECT name
-        FROM airline
-        WHERE idAirline = %s
-    """, (airline,))
-    recomended_airlines = cursor.fetchall()
+    recomended_airlines = []
+    if airline_ids:
+        # fetch airline names
+        format_strings = ','.join(['%s'] * len(airline_ids))
+        cursor.execute(f"SELECT idAirline, name FROM airline WHERE idAirline IN ({format_strings})", tuple(airline_ids))
+        recomended_airlines = [{'idAirline': r[0], 'name': r[1]} for r in cursor.fetchall()]
 
     cursor.close()
     conexion.close()
@@ -78,7 +82,7 @@ def getAirlines():
     # Se devuelve una lista de objetos JSON
     return jsonify(recomended_airlines)
 
-# FUNCIÓN 2.2: OBTENER Y DESPLEGAR LOS VUELOS RECOMENDADOS POR AEREOLINEA
+# FUNCIÓN 2.2: OBTENER Y DESPLEGAR LOS VUELOS RECOMENDADOS POR AEREOLINEA : al seleccionar la aerolinea
 
 @app.route('/api/flight', methods=['POST'])
 def getFlights():
@@ -90,20 +94,25 @@ def getFlights():
 
     conexion = conect()
     cursor = conexion.cursor()
-    cursor.execute(""" 
+    # get airline id by name
+    cursor.execute("""
         SELECT idAirline
         FROM airline
         WHERE name = %s
-    """, (airline))
+    """, (airline,))
+    row = cursor.fetchone()
+    if not row:
+        cursor.close()
+        conexion.close()
+        return jsonify({"error": "Aerolínea no encontrada"}), 404
 
-    airline = cursor.fetchone()
-
+    airline_id = row[0]
     cursor.execute("""
-        SELECT idFlight
+        SELECT idFlight, code, origin, destination
         FROM flight
         WHERE idAirline = %s
-    """, (airline,))
-    recomended_flights = cursor.fetchall()
+    """, (airline_id,))
+    recomended_flights = [{'idFlight': r[0], 'code': r[1] if len(r)>1 else None, 'origin': r[2] if len(r)>2 else None, 'destination': r[3] if len(r)>3 else None} for r in cursor.fetchall()]
 
     cursor.close()
     conexion.close()
@@ -112,7 +121,79 @@ def getFlights():
     return jsonify(recomended_flights)
 
 
-# FUNCIÓN 3: CREAR REGISTRO DE MANEJO DE BOTELLAS
+# API: login -> returns facility and recommended airlines for the employee
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    data = request.get_json() or {}
+    idEmployee = data.get('idEmployee')
+    if not idEmployee:
+        return jsonify({'error': 'missing idEmployee'}), 400
+
+    facility = EmployeeLogin(idEmployee)
+    if not facility:
+        return jsonify({'error': 'employee not found'}), 404
+
+    # recommended airlines for facility
+    conexion = conect()
+    cursor = conexion.cursor()
+    cursor.execute("SELECT idAirline FROM work WHERE idFacility = %s", (facility.get('idFacility'),))
+    rows = cursor.fetchall()
+    airline_ids = [r[0] for r in rows] if rows else []
+    recomended_airlines = []
+    if airline_ids:
+        format_strings = ','.join(['%s'] * len(airline_ids))
+        cursor.execute(f"SELECT idAirline, name FROM airline WHERE idAirline IN ({format_strings})", tuple(airline_ids))
+        recomended_airlines = [{'idAirline': r[0], 'name': r[1]} for r in cursor.fetchall()]
+
+    cursor.close()
+    conexion.close()
+
+    return jsonify({'facility': facility, 'airlines': recomended_airlines})
+
+
+# API: create bottle management record
+@app.route('/api/create_bm', methods=['POST'])
+def api_create_bm():
+    data = request.get_json() or {}
+    idEmployee = data.get('idEmployee')
+    idFlight = data.get('idFlight')
+    if not idEmployee or not idFlight:
+        return jsonify({'error': 'missing idEmployee or idFlight'}), 400
+
+    conexion = conect()
+    cursor = conexion.cursor()
+    cursor.execute("INSERT INTO bottlemanagment (idEmployee, idFlight, dateAssigned) VALUES (%s, %s, %s)", (idEmployee, idFlight, datetime.now()))
+    conexion.commit()
+    idBM = cursor.lastrowid
+    cursor.close()
+    conexion.close()
+    return jsonify({'idBM': idBM})
+
+
+# API: register a bottle (simplified wrapper for BottleRegister)
+@app.route('/api/register_bottle', methods=['POST'])
+def api_register_bottle():
+    data = request.get_json() or {}
+    idBM = data.get('idBM')
+    size = data.get('size')
+    licor = data.get('licor')
+    brand = data.get('brand')
+    fillLevel = data.get('fillLevel')
+    if not idBM:
+        return jsonify({'error': 'missing idBM'}), 400
+
+    # Perform a simplified insert into botellas and return success/decision
+    conexion = conect()
+    cursor = conexion.cursor()
+    cursor.execute("INSERT INTO botellas (idBM, size, licor, brand, decision) VALUES (%s, %s, %s, %s, %s)", (idBM, size, licor, brand, 'unknown'))
+    conexion.commit()
+    idBottle = cursor.lastrowid
+    cursor.close()
+    conexion.close()
+    return jsonify({'idBottle': idBottle, 'decision': 'registered'})
+
+
+# FUNCIÓN 3: CREAR REGISTRO DE MANEJO DE BOTELLAS: al presionar hola
 
 def BottleManagmentRegister(idEmployee, idFlight):
     conexion = conect()
@@ -128,7 +209,7 @@ def BottleManagmentRegister(idEmployee, idFlight):
     return idBM
 
 
-# FUNCIÓN 4: REGISTRAR BOTELLA INDIVIDUAL
+# FUNCIÓN 4: REGISTRAR BOTELLA INDIVIDUAL: al presionar el boton azul de registrar
 
 def BottleRegister(idBM, Country, size, licor, brand, fillLevel):
     conexion = conect()
@@ -176,11 +257,24 @@ def BottleRegister(idBM, Country, size, licor, brand, fillLevel):
     conexion.close()
     return decision
 
-def Logout() :
-    return jsonify({
-        "status": "ok",
-        "next_route": "/Login"
-    })
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Run on port 5001 to match frontend expectations
+    app.run(debug=True, host='0.0.0.0', port=5001)
+
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    # Accepts JSON { image: 'data:image/png;base64,...' }
+    data = request.get_json() or {}
+    img = data.get('image')
+    if not img:
+        return jsonify({'error': 'no image provided'}), 400
+
+    # TODO: replace with real model inference. For now return deterministic fake response.
+    # Simple heuristic: if the payload length is even -> 'Keep', else 'Discard'
+    try:
+        l = len(img)
+        pred = 'Keep' if (l % 2 == 0) else 'Discard'
+        return jsonify({'prediction': pred})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
